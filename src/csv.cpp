@@ -37,6 +37,7 @@ void getField(std::string& field, const std::string& record, int n)
    unsigned int i = 0, j = 0;
 
    field.clear();
+   // field = "";
    while (i < record.length()) {
       while (record[i] != ',' && i < record.length())
          if (record[i] != '\"')

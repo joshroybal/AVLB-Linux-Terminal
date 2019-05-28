@@ -146,7 +146,7 @@ void process(std::vector<std::string>& relation, int select_fields[], int find_f
             const std::string& target, int reclen, int nf)
 {
    char buf[RECSIZ];
-   std::string record, field;
+   // std::string record, field;
    AVL* BaseTree = new AVL();
 
    direct.open("direct.dat", std::ios::binary | std::ios::in);
@@ -154,11 +154,12 @@ void process(std::vector<std::string>& relation, int select_fields[], int find_f
    int n = 0;
    float t1 = float(clock()) / CLOCKS_PER_SEC;
    while (direct.read(buf, reclen)) {
-      record = buf;
-      std::string key;
+      std::string record(buf);
+      std::string key("");
       int idx = 0;
       while (find_fields[idx] != 0) {
          if (idx) key += ",";
+         std::string field("");
          getField(field, record, find_fields[idx++]);
          key += field;
       }
@@ -191,16 +192,17 @@ void process(std::vector<std::string>& relation, int select_fields[], int find_f
    // we don't need to read the matches into a new tree and reload the index to 
    // the matching nodes from it unless the user wants to sort her data
    if (order_fields[0] >= 1 && order_fields[0] <= nf) {
-      BST* MatchTree = new BST();
+      AVL* MatchTree = new AVL();
       for (unsigned int i = 0; i < matchIdx.size(); i++) {
          direct.seekg((matchIdx[i] - 1) * reclen, std::ios::beg);
          direct.read(buf, reclen);
-         record = buf;
+         std::string record(buf);
          int idx = 0;
          // construct the key from the fields the user want to extract from the buf
-         std::string key;
+         std::string key("");
          while (order_fields[idx] != 0) {
             if (idx) key += ",";
+            std::string field("");
             getField(field, record, order_fields[idx++]);
             key += field;
          }
@@ -219,7 +221,7 @@ void process(std::vector<std::string>& relation, int select_fields[], int find_f
    for (unsigned i = 0; i < matchIdx.size(); i++) {
       direct.seekg((matchIdx[i] - 1) * reclen, std::ios::beg);
       direct.read(buf, reclen);
-      record = buf;
+      std::string record(buf);
       unsigned idx = 0;
       // construct the key from the fields the user wants to extract from the record
       std::stringstream ss;
@@ -227,6 +229,7 @@ void process(std::vector<std::string>& relation, int select_fields[], int find_f
       std::string key(ss.str());
       while (select_fields[idx] != 0) {
          key += ",";
+         std::string field("");
          getField(field, record, select_fields[idx++]);
          if (containsComma(field)) {
             key += "\"";
