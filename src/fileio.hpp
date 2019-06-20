@@ -6,6 +6,6 @@
 // global function prototypes
 void initialize(int*, int);
 void getChoices(int*, int);
-void writeTable(std::fstream&, const std::vector<std::string>&);
+void writeTable(std::ofstream&, const std::vector<std::string>&);
 
 #endif

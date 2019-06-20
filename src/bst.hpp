@@ -20,7 +20,6 @@ class BST
       void serializeText(std::ofstream&) const;
       void serializeBinary(std::ofstream&) const;
       void deserializeText(std::ifstream&);
-      // std::string betasearch(const std::string) const;
       std::vector<int> search(const std::string&) const;
       int height() const;
       int size() const;

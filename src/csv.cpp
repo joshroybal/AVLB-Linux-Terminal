@@ -1,3 +1,5 @@
+#include <sstream>
+#include <cstring>
 #include "csv.hpp"
 
 // scan header for no. of fields that will need to be processed
@@ -32,12 +34,48 @@ void getFields(std::vector<std::string>& fields, const std::string& record)
    }
 }  
 
+void getField(char* field, const char* record, int n)
+{
+   const int reclen = strlen(record);
+   unsigned int i = 0, j = 0, idx = 0;
+
+   memset(field, '\0', FLDLEN);
+   while (i < reclen) {
+      while (record[i] != ',' && i < reclen) {
+         if (record[i] != '"') {
+            if (j + 1 == n) {
+               field[idx++] = record[i++];
+               if ( idx == FLDLEN - 1 ) return;
+            } 
+            else {
+               i++;
+            }
+         } 
+         else {
+            i++;
+            while (record[i] != '"') {
+               if (j + 1 == n) {
+                  field[idx++] = record[i++];
+                  if ( idx == FLDLEN - 1 ) return;
+               }
+               else {
+                  i++;
+               }
+            }
+            i++;
+         }
+      }
+      if (j + 1 == n) return;
+      i++;
+      j++;
+   }
+}
+
 void getField(std::string& field, const std::string& record, int n)
 {
    unsigned int i = 0, j = 0;
 
    field.clear();
-   // field = "";
    while (i < record.length()) {
       while (record[i] != ',' && i < record.length())
          if (record[i] != '\"')
@@ -60,6 +98,36 @@ void getField(std::string& field, const std::string& record, int n)
       j++;
    }
    field.clear();
+}
+
+std::string getField(const char* record, int n)
+{
+   const int reclen = strlen(record);
+   unsigned int i = 0, j = 0;
+
+   std::ostringstream osstr;
+   while ( i < reclen ) {
+      while ( record[i] != ',' && i < reclen )
+         if (record[i] != '"')
+            if (j + 1 == n)
+               osstr << record[i++];
+            else
+               i++;
+         else {
+            i++;
+            while (record[i] != '"') {
+               if (j + 1 == n)
+                  osstr << record[i++];
+               else
+                  i++;
+            }
+            i++;
+         }
+      if (j + 1 == n) return osstr.str();
+      i++;
+      j++;
+   }
+   return "";
 }
 
 bool containsComma(const std::string& str)

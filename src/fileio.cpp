@@ -28,7 +28,7 @@ void getChoices(int* field_choices, int n)
 }
 
 // so's we's know's we's can's do's it's
-void writeTable(std::fstream& sequential, const std::vector<std::string>& relation)
+void writeTable(std::ofstream& sequential, const std::vector<std::string>& relation)
 {
    unsigned int maxima[NOFLDS];
    std::vector<std::string> flds;
