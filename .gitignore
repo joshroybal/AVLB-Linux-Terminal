@@ -1,5 +1,5 @@
 *.swp
 *~
 *.dat
-/obj/*
-/bin/*
+obj/
+bin/
